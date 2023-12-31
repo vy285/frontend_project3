@@ -1,0 +1,32 @@
+.navIcons{
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    width: 30%;
+}
+
+.navIcons .item {
+    background-color: aqua;
+    width: 25%;
+    align-items: center;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.item:hover {
+    background-color: cadetblue;
+}
+
+/* .navIcons>a>img{
+    width: 1.5rem;
+    height: 1.5rem;
+} */
+
+.navIcons img{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.navIcons>img:hover{
+    cursor: pointer;
+}
