@@ -9,19 +9,26 @@ import { useSelector } from "react-redux";
 import profile from "../../img/profile.png";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import { io } from "socket.io-client";
-import SockJS from "sockjs-client"
+import { over } from "stompjs";
+import SockJS from "sockjs-client";
+var stompClient = null;
 
-const url = "http://192.168.1.21:2805";
+const url = "http://localhost:2805";
 const Home = () => {
   const [conversationList, setConversationList] = useState([]);
   const token = useSelector((state) => state.token);
   const myId = useSelector((state) => state.userId);
   const [currentChat, setCurrentChat] = useState(null);
+  const [sendMessage, setSendMessage] = useState(null);
+  const [receivedMessage, setReceivedMessage] = useState(null);
+  const [isFresh, setIsFresh] = useState(true);
+  const [text, setText] = useState("gia tri cu")
+  const [message, setMessage] = useState(null);
 
   //lay danh sach cuoc tro chuyen
   const getConversationList = async () => {
     console.log("token", token);
-    await fetch(`http://192.168.1.21:2805/conversation`, {
+    await fetch(`http://localhost:2805/conversation`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -42,28 +49,92 @@ const Home = () => {
           setConversationList(response.data);
         }
       });
+
+      setText("gia tri moi")
   };
   useEffect(() => {
     getConversationList();
   }, [myId]);
 
-  //connect socket
+  const connectSocket = () => {
+    let Sock = new SockJS("http://localhost:2805/ws");
+    stompClient = over(Sock);
+    stompClient.connect({}, onConnected, onError);
+  };
+
+  const onConnected = () => {
+    if (stompClient.connected === true) {
+      console.log("dang lang nghe");
+      stompClient.subscribe(`/user/${myId}/queue/messages`, onMessageReceived);
+    } else {
+      console.log("khong lang nghe");
+    }
+  };
+  const onError = (err) => {
+    console.log(err);
+  };
+
+  // ham xu ly nhung message duoc gui ve user
+  const onMessageReceived = (payload) => {
+    // console.log("Message received", payload);
+    setMessage(JSON.parse(payload.body))
+    console.log("message nhan ve", message);
+    setReceivedMessage(JSON.parse(payload.body));
+    console.log("received message", receivedMessage);
+    console.log("conversation lang nghe", conversationList);
+    setIsFresh(prev => !prev)
+    
+  };
+
   useEffect(() => {
-    // const sock = new SockJS("http://192.168.1.21:2805/ws");
-    // sock.onopen = function() {
-    //     console.log('open');
-    //     // sock.send('test');
-    // };
+    if (message !== null) {
+      setConversationList(
+        moveConversationToTop(message.conId, `Friend: ${message.content}`)
+      );
+    } else {
+      console.log("message is null")
+    }
+  }, [isFresh]);
 
+  //cap nhap vi tri cua conversation co thay doi
+  const moveConversationToTop = (conId, newLastMessage) => {
+    console.log(text);
 
-    // const socket = io("ws://192.168.1.21:2805/ws");
-    // socket.on('connect' , () => console.log('coonect successful'));
-    // socket.current.emit("new-user-add", user._id);
-    // socket.current.on("get-users", (users) => {
-    //   setOnlineUsers(users);
-    // });
-  }, [myId]);
+    console.log("ban dau", conversationList);
+    const copy = conversationList.slice();
+    const conversationIndex = copy.findIndex((item) => item.conId === conId);
 
+    if (conversationIndex !== -1) {
+      const movedConversation = copy.splice(conversationIndex, 1)[0];
+      copy.unshift(movedConversation);
+      copy[0].lastMessage = newLastMessage;
+    }
+
+    console.log("danh sach tro chuyen", copy);
+    return copy;
+  };
+
+  //connect socket
+  useEffect(connectSocket, []);
+
+  // gui tin nhan
+  useEffect(() => {
+    if (sendMessage !== null && stompClient.connected === true) {
+      console.log("gui tin nhan o home");
+      stompClient.send("/app/message", {}, JSON.stringify(sendMessage));
+      const conId =
+        sendMessage.senderId < sendMessage.receiverId
+          ? `${sendMessage.senderId}-${sendMessage.receiverId}`
+          : `${sendMessage.receiverId}-${sendMessage.receiverId}`;
+      setConversationList(
+        moveConversationToTop(conId, `You: ${sendMessage.content}`)
+      );
+    } else {
+      console.log("khong the gui tin nhan o home");
+    }
+  }, [sendMessage]);
+
+  console.log("converationList", conversationList);
   return (
     <div className="Chat">
       <div className="Left-side-chat">
@@ -72,7 +143,7 @@ const Home = () => {
           {conversationList.map((item, index) => (
             <div
               onClick={() => setCurrentChat(item)}
-              key={index}
+              key={item.conId}
               className="conversation follower"
             >
               <img
@@ -89,7 +160,12 @@ const Home = () => {
         </div>
       </div>
       <div className="Right-side-chat">
-        <ChatBox item={currentChat} currentUser={myId} />
+        <ChatBox
+          item={currentChat}
+          currentUser={myId}
+          setSendMessage={setSendMessage}
+          receivedMessage={receivedMessage}
+        />
       </div>
     </div>
   );

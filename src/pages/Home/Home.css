@@ -5,7 +5,8 @@
     grid-template-columns: 22% auto;
     gap: 1rem;
     border: 1px solid black;
-    width: 1000px;
+    width:80%;
+    min-width: 600px;
     height: 650px;
   }
   

@@ -4,16 +4,19 @@ import "./ChatBox.css";
 import InputEmoji from "react-input-emoji";
 import { format } from "timeago.js";
 import { useSelector } from "react-redux";
+import { useRef } from "react";
 
 const ChatBox = ({ item, currentUser, setSendMessage,  receivedMessage}) => {
   const [content, setContent] = useState("");
   const [historyMess, setHistoryMess] = useState([]);
   const token = useSelector((state) => state.token);
+  const scroll = useRef();
 
+
+  //lay lich su tin nhan
   const getMessage = async () => {
-    // console.log("info " , item.conId);
     if (item !== null) {
-        await fetch(`http://192.168.1.21:2805/message/${item.conId}?length=100`, {
+        await fetch(`http://localhost:2805/message/${item.conId}?length=100`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -43,10 +46,37 @@ const ChatBox = ({ item, currentUser, setSendMessage,  receivedMessage}) => {
     getMessage();
   }, [item?.conId]);
 
-  const handleSend = () => {
-    setContent('');
+  //gui tin nhan
+  const handleSend = async (event) => {
+    console.log('gui tin nhan')
+    event.preventDefault()
+    if (content!==null && content.length > 0) {
+      setContent('');
+    var dataMess = {
+      content: content,
+      type: 'TEXT',
+      senderId: currentUser,
+      receiverId: currentUser === item.userIdSendReferral ? item.userIdReceiveReferral : item.userIdSendReferral,
+    }
+    setSendMessage(dataMess);
+    setHistoryMess([{ ...dataMess, createdAt: new Date().getTime() }, ...historyMess])
+    }
   };
-  console.log('tin nhan lay ve ', historyMess)
+
+  //luot den dau trang khi co tin nhan
+  useEffect(()=> {
+    scroll.current?.scrollIntoView({ behavior: "smooth" });
+  },[historyMess])
+
+  // khi co tin nhan gui den
+  useEffect(()=> {
+    console.log("Mess nhan o chatbox: ", receivedMessage)
+    if (receivedMessage !== null && receivedMessage.conId === item?.conId) {
+      setHistoryMess([receivedMessage, ...historyMess]);
+    }
+  },[receivedMessage])
+
+
   return (
     <div className="ChatBox-container">
       {item ? (
@@ -76,10 +106,10 @@ const ChatBox = ({ item, currentUser, setSendMessage,  receivedMessage}) => {
           </div>
           {/* chat-body */}
           <div className="chat-body">
-            {historyMess.map((message) => (
-              <>
+            {historyMess.slice().reverse().map((message, index) => (
+              <div key={index} style={{width: "100%"}}>
                 <div
-                //   ref={scroll}
+                  ref={scroll}
                   className={
                     message.senderId === currentUser ? "message own" : "message"
                   }
@@ -87,7 +117,7 @@ const ChatBox = ({ item, currentUser, setSendMessage,  receivedMessage}) => {
                   <span>{message.content}</span>{" "}
                   <span>{format(message.createdAt)}</span>
                 </div>
-              </>
+              </div>
             ))}
           </div>
           {/* chat-sender */}

@@ -19,10 +19,10 @@
     gap: 0.5rem;
     padding: 1.5rem;
     overflow: scroll;
+    /* width: 700px; */
 }
 
 .message {
-
   background: var(--buttonBg);
   color: white;
   padding: 0.7rem;
@@ -32,6 +32,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin-left: 0;
 }
 
 .message>span:nth-child(2){
@@ -44,6 +45,7 @@
   align-self: flex-end;
   border-radius: 1rem 1rem 0 1rem;
   background: linear-gradient(98.63deg, #24e4f0 0%, #358ff9 100%);
+  margin-left: auto;
 }
 
 

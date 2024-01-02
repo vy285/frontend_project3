@@ -1,0 +1,97 @@
+/* styles.css */
+
+.profile-container {
+  /* max-width: 600px; */
+  margin-top: 30px;
+  position: relative;
+  /* display: grid; */
+  grid-template-columns: 22% auto;
+  gap: 1rem;
+  border: 1px solid black;
+  width: 500px;
+  height: 650px;
+}
+
+.profile-details {
+  display: flex;
+  align-items: center;
+  height: 300px;
+  background-color: #0056b3;
+}
+
+.avatar {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  margin-right: 20px;
+  background-color: antiquewhite;
+}
+
+.details {
+  flex-grow: 1;
+  background-color: aqua;
+}
+
+.profile-buttons {
+  margin-top: 20px;
+}
+
+.profile-buttons button {
+  padding: 10px 15px;
+  font-size: 16px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* Optional: Add hover effect for buttons */
+.profile-buttons button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+/* styles.css */
+
+.edit-icon {
+  margin-left: 5px;
+  cursor: pointer;
+  color: #007bff;
+}
+
+.edit-icon:hover {
+  color: #0056b3;
+}
+
+/* ... (các phần CSS khác) */
+/* styles.css */
+
+/* .profile-details {
+    display: flex;
+    align-items: center;
+  }
+  
+  .avatar-container {
+    position: relative;
+  } */
+
+.avatar-container .edit-icon {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  cursor: pointer;
+  color: #007bff;
+}
+
+.avatar-container .edit-icon:hover {
+  color: #0056b3;
+}
+
+.input {
+  width: 150px;
+}
+.readOnly {
+  background-color: #aaa;
+}
+.title {
+  width: 200px;
+}
+
+/* ... (các phần CSS khác) */

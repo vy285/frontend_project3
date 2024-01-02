@@ -29,7 +29,7 @@ const Auth = () => {
   const handleLogin = async (event) => {
     console.log('login')
     event.preventDefault();
-    const url = "http://192.168.1.21:2805/public/login";
+    const url = "http://localhost:2805/public/login";
 
     await fetch(url, {
       method: "POST",

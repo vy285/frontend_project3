@@ -52,7 +52,7 @@ const Signup = () => {
     console.log("Send Code");
     if (data.username === undefined) {
     } else {
-        const url = "http://192.168.1.21:2805/public/sendVerifyCode";
+        const url = "http://localhost:2805/public/sendVerifyCode";
 
         await fetch(url, {
           method: "POST",
@@ -82,7 +82,7 @@ const Signup = () => {
   
   const handleSignup = async (event) => {
     event.preventDefault();
-    const url = "http://192.168.1.21:2805/public/signup";
+    const url = "http://localhost:2805/public/signup";
 
         await fetch(url, {
           method: "POST",
@@ -101,6 +101,7 @@ const Signup = () => {
             if (statusCode === 200) {
               console.log('dang ky thanh cong')
               resetForm();
+              alert('dang ky thanh cong')
               return (response = response.json());
             } else {
               alert("Dữ liệu thất bại");
