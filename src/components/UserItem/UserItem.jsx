@@ -38,7 +38,10 @@ const UserItem = ({ user, setIsFresh }) => {
         setIsFresh((prev) => !prev);
         return response.json();
       } else {
-        alert("Dữ liệu thất bại");
+        return response.json().then((errorData) => {
+          console.log(errorData.data.message);
+          alert(errorData.data.message);
+        });
       }
     });
   };
@@ -57,7 +60,10 @@ const UserItem = ({ user, setIsFresh }) => {
         setIsFresh((prev) => !prev);
         return response.json();
       } else {
-        alert("Dữ liệu thất bại");
+        return response.json().then((errorData) => {
+          console.log(errorData.data.message);
+          alert(errorData.data.message);
+        });
       }
     });
   };
@@ -76,7 +82,10 @@ const UserItem = ({ user, setIsFresh }) => {
         setIsFresh((prev) => !prev);
         return response.json();
       } else {
-        alert("Dữ liệu thất bại");
+        return response.json().then((errorData) => {
+          console.log(errorData.data.message);
+          alert(errorData.data.message);
+        });
       }
     });
   };

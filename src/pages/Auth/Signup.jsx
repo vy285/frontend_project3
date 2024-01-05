@@ -17,7 +17,7 @@ const Signup = () => {
 
   const [data, setData] = useState(initialState);
 
-  const [confirmPass, setConfirmPass] = useState(true);
+  const [confirmPass, setConfirmPass] = useState("");
 
   const [username, setUsername] = useState("");
 
@@ -26,7 +26,7 @@ const Signup = () => {
   // Reset Form
   const resetForm = () => {
     setData(initialState);
-    setConfirmPass(confirmPass);
+    setConfirmPass("");
   };
 
   // handle Change in input
@@ -52,38 +52,42 @@ const Signup = () => {
     console.log("Send Code");
     if (data.username === undefined) {
     } else {
-        const url = "http://localhost:2805/public/sendVerifyCode";
+      const url = "http://localhost:2805/public/sendVerifyCode";
 
-        await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            gmail: data.username,
-          }),
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          gmail: data.username,
+        }),
+      })
+        .then((response) => {
+          const statusCode = response.status;
+          if (statusCode === 200) {
+            return (response = response.json());
+          } else {
+            return response.json().then((errorData) => {
+              console.log(errorData.data.message);
+              alert(errorData.data.message);
+            });
+          }
         })
-          .then((response) => {
-            const statusCode = response.status;
-            if (statusCode === 200) {
-              console.log('asdasdasd')
-              return (response = response.json());
-            } else {
-              alert("Dữ liệu thất bại");
-            }
-          })
-          .then((response) => {
-            if (response !== undefined) {
-            }
-          });
+        .then((response) => {
+          if (response !== undefined) {
+          }
+        });
       console.log(data.username);
     }
   };
-  
+
   const handleSignup = async (event) => {
     event.preventDefault();
     const url = "http://localhost:2805/public/signup";
 
+    if (data.nickname !== "" && data.username !== "" && data.password !== "" && data.verifyCode !== "" && confirmPass !== "") {
+      if (data.password === confirmPass) {
         await fetch(url, {
           method: "POST",
           headers: {
@@ -99,20 +103,29 @@ const Signup = () => {
           .then((response) => {
             const statusCode = response.status;
             if (statusCode === 200) {
-              console.log('dang ky thanh cong')
+              console.log("dang ky thanh cong");
               resetForm();
-              alert('dang ky thanh cong')
+              alert("Đăng ký thành công");
               return (response = response.json());
-            } else {
-              alert("Dữ liệu thất bại");
+            } 
+            else {
+              return response.json().then((errorData) => {
+                console.log(errorData.data.message);
+                alert(errorData.data.message);
+              });
             }
           })
           .then((response) => {
             if (response !== undefined) {
             }
           });
-
-  }
+      } else {
+        alert("Mật khẩu không trùng khớp")
+      }
+    } else {
+      alert("Làm ơn, hãy điền đầy đủ thông tin")
+    }
+  };
 
   return (
     <div className="Auth">
@@ -160,13 +173,23 @@ const Signup = () => {
               required
               type="password"
               className="infoInput"
-              placeholder="Password"
+              placeholder="password"
               name="password"
               value={data.password}
               onChange={handleChange}
             />
           </div>
-
+          <div>
+            <input
+              required
+              type="password"
+              className="infoInput"
+              placeholder="confirm password"
+              name="confirmPass"
+              value={confirmPass}
+              onChange={(e) => setConfirmPass(e.target.value)}
+            />
+          </div>
           <div>
             <input
               type="text"
@@ -180,17 +203,6 @@ const Signup = () => {
               Send Code
             </Button>
           </div>
-          <span
-            style={{
-              color: "red",
-              fontSize: "12px",
-              alignSelf: "flex-end",
-              marginRight: "5px",
-              display: confirmPass ? "none" : "block",
-            }}
-          >
-            *Confirm password is not same
-          </span>
           <div>
             <span
               style={{

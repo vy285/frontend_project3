@@ -30,7 +30,10 @@ const ReferralItem = ({ user, setIsFresh }) => {
         setIsFresh(prev => !prev);
         return response.json();
       } else {
-        alert("Dữ liệu thất bại");
+        return response.json().then((errorData) => {
+          console.log(errorData.data.message);
+          alert(errorData.data.message);
+        });
       }
     });
   };
@@ -46,11 +49,14 @@ const ReferralItem = ({ user, setIsFresh }) => {
     }).then((response) => {
       const statusCode = response.status;
       if (statusCode === 200) {
-        console.log("tu choi thanh cong")
+        console.log("Tu choi thanh cong")
         setIsFresh(prev => !prev);
         return response.json();
       } else {
-        alert("Dữ liệu thất bại");
+        return response.json().then((errorData) => {
+          console.log(errorData.data.message);
+          alert(errorData.data.message);
+        });
       }
     });
   };

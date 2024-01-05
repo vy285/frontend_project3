@@ -30,7 +30,10 @@ const Referral = () => {
         if (statusCode === 200) {
           return response.json();
         } else {
-          alert("Dữ liệu thất bại");
+          return response.json().then((errorData) => {
+            console.log(errorData.data.message);
+            alert(errorData.data.message);
+          });
         }
       })
       .then((response) => {

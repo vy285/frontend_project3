@@ -46,7 +46,10 @@ const Profile = () => {
             setEditMode(!editMode);
             return response.json();
           } else {
-            alert("Dữ liệu thất bại");
+            return response.json().then((errorData) => {
+              console.log(errorData.data.message);
+              alert(errorData.data.message);
+            });
           }
         });
       } else {
@@ -95,7 +98,10 @@ const Profile = () => {
             setConfirmPass(null);
             return response.json();
           } else {
-            alert("Dữ liệu thất bại");
+            return response.json().then((errorData) => {
+              console.log(errorData.data.message);
+              alert(errorData.data.message);
+            });
           }
         });
         } else {
@@ -110,6 +116,9 @@ const Profile = () => {
   };
 
   const handleBack = () => {
+    setOldPass(null);
+    setNewPass(null);
+    setConfirmPass(null);
     setEditMode(false);
     setEditPass(false);
   };
@@ -127,7 +136,10 @@ const Profile = () => {
         if (statusCode === 200) {
           return response.json();
         } else {
-          alert("Dữ liệu thất bại");
+          return response.json().then((errorData) => {
+            console.log(errorData.data.message);
+            alert(errorData.data.message);
+          });
         }
       })
       .then((response) => {
