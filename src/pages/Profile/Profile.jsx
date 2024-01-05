@@ -162,7 +162,7 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-details">
         <div {...getRootProps()} className="avatar-container">
-          {editMode && <input {...getInputProps()} />}
+          {false && <input {...getInputProps()} />}
           <img
             src={avatar ? avatar : profile}
             alt="Avatar"
