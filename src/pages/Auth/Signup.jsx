@@ -199,9 +199,9 @@ const Signup = () => {
               value={data.verifyCode}
               onChange={handleChange}
             />
-            <Button className="button infoButton" onClick={(e) => sendCode(e)}>
+            <button className="button infoButton" onClick={(e) => sendCode(e)}>
               Send Code
-            </Button>
+            </button>
           </div>
           <div>
             <span
@@ -217,14 +217,14 @@ const Signup = () => {
             >
               Have account to signin
             </span>
-            <Button
+            <button
               className="button infoButton"
               type="Submit"
               onClick={(event) => handleSignup(event)}
               // disabled={loading}
             >
               Sign up
-            </Button>
+            </button>
           </div>
         </form>
       </div>

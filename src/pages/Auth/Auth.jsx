@@ -117,14 +117,14 @@ const Auth = () => {
             >
               Don't have an account Sign up
             </span>
-            <Button
+            <button
               className="button infoButton"
               type="Submit"
               onClick={handleLogin}
               // disabled={loading}
             >
               Login
-            </Button>
+            </button>
           </div>
         </form>
       </div>
