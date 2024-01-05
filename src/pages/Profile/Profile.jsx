@@ -20,33 +20,38 @@ const Profile = () => {
   const [avatar, setAvatar] = useState("");
   const [editPass, setEditPass] = useState(false);
   const [newPass, setNewPass] = useState(null);
+  const [confirmPass, setConfirmPass] = useState(null);
   const [oldPass, setOldPass] = useState(null);
   const token = useSelector((state) => state.token);
 
   const handleEditClick = async () => {
     if (editMode === true) {
       console.log("sua thong tin");
-      await fetch(`${url}userInfo`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: " Bearer " + token,
-        },
-        body: JSON.stringify({
-          avatar: avatar,
-          dateOfBirth: dateOfBirth,
-          nickname: nickname,
-          address: address,
-        }),
-      }).then((response) => {
-        const statusCode = response.status;
-        if (statusCode === 200) {
-          setEditMode(!editMode);
-          return response.json();
-        } else {
-          alert("Dữ liệu thất bại");
-        }
-      });
+      if (nickname !== undefined && nickname !== "") {
+        await fetch(`${url}userInfo`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: " Bearer " + token,
+          },
+          body: JSON.stringify({
+            avatar: avatar,
+            dateOfBirth: dateOfBirth,
+            nickname: nickname,
+            address: address,
+          }),
+        }).then((response) => {
+          const statusCode = response.status;
+          if (statusCode === 200) {
+            setEditMode(!editMode);
+            return response.json();
+          } else {
+            alert("Dữ liệu thất bại");
+          }
+        });
+      } else {
+        alert("Hãy điền nick name")
+      }
     } else {
       setEditMode(!editMode);
     }
@@ -67,8 +72,9 @@ const Profile = () => {
   const handlePassClick = async (event) => {
     event.preventDefault();
     if (editPass === true) {
-      if (oldPass !== null && newPass !== null) {
-        console.log("thay doi mat khau");
+      if (oldPass !== null && newPass !== null && confirmPass !== null) {
+        if (newPass === confirmPass) {
+          console.log("thay doi mat khau");
         await fetch(`${url}account/password`, {
           method: "POST",
           headers: {
@@ -84,11 +90,19 @@ const Profile = () => {
           if (statusCode === 200) {
             alert("Doi mat khau thanh cong");
             setEditPass(!editPass);
+            setOldPass(null);
+            setNewPass(null);
+            setConfirmPass(null);
             return response.json();
           } else {
             alert("Dữ liệu thất bại");
           }
         });
+        } else {
+          alert("Mật khẩu mới không trùng khớp!")
+        }
+      } else {
+        alert("Hãy điền đầy đủ thông tin")
       }
     } else {
       setEditPass(!editPass);
@@ -196,6 +210,15 @@ const Profile = () => {
                   type="password"
                   value={newPass}
                   onChange={(e) => setNewPass(e.target.value)}
+                />
+              </div>
+              <div>
+                <div className="title">Điền lại mật khẩu mới: </div>
+                <input
+                  className="input"
+                  type="password"
+                  value={confirmPass}
+                  onChange={(e) => setConfirmPass(e.target.value)}
                 />
               </div>
             </>
